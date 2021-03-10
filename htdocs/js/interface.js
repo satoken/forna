@@ -8,7 +8,7 @@
 
 /* global ko, Element, err */
 
-serverURL = "";
+serverURL = "/forna";
 
 $(window).resize(function() {
  setPlottingArea();

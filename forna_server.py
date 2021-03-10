@@ -21,10 +21,16 @@ import os
 import RNA
 from optparse import OptionParser
 from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+#from werkzeug.serving import run_simple
 
 import forgi.utilities.debug as fud
 import forgi.utilities.stuff as fus
 import forna_db as fdb
+
+def simple(env, resp):
+    resp(b'200 OK', [(b'Content-Type', b'text/plain')])
+    return [b'Hello WSGI World']
 
 def create_app(static):
     '''
@@ -271,6 +277,10 @@ def main():
                         '[in %(pathname)s:%(funcName)s:%(lineno)d]')
     fdb.init()
     app = create_app(options.static)
+#    app.config['APPLICATION_ROOT'] = os.getenv('SCRIPT_NAME', None)
+    SCRIPT_NAME = os.getenv('SCRIPT_NAME', None)
+    if SCRIPT_NAME is not None:
+        app.wsgi_app = DispatcherMiddleware(simple, {SCRIPT_NAME: app.wsgi_app})
     app.run(host=options.host, debug=options.debug, port=options.port)
 
 if __name__ == '__main__':
