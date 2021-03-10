@@ -10,7 +10,7 @@ __version__     = "0.1"
 __maintainer__  = "Stefan Hammer"
 __email__       = "jango@tbi.univie.ac.at"  
 
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template
 
 import Bio.PDB as bpdb
 import forna
@@ -214,6 +214,10 @@ def create_app(static):
             abort(400, "Database error: {}".format(str(ex)))
         
         return "callback(" + json.dumps(graph) + ");", 201
+
+    @app.route('/js/interface.js')
+    def rewrite_server_url():
+        return render_template('js/interface.js', server_url=os.getenv('SCRIPT_NAME', ''))
 
     if static:
         print(" * Starting static", file=sys.stderr)

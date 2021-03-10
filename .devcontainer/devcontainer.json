@@ -4,7 +4,7 @@
 	"appPort": 9000,
 	"context": "..",
 	"extensions": [
-		"ms-python.python", "ms-python.vscode-pylance"
+		"ms-python.python", "ms-python.vscode-pylance", "ms-azuretools.vscode-docker"
 	],
 	"settings": {
 		"python.pythonPath": "/usr/local/bin/python"

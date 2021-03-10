@@ -8,7 +8,7 @@
 
 /* global ko, Element, err */
 
-serverURL = "";
+serverURL = "{{server_url}}";
 
 $(window).resize(function() {
  setPlottingArea();

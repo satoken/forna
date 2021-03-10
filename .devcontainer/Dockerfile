@@ -4,8 +4,8 @@ RUN mkdir /workspace
 WORKDIR /workspace
 
 # Install Python dependencies from requirements.txt if it exists
-COPY .devcontainer/requirements.txt.temp requirements.txt* /workspace/
-RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt && rm requirements.txt*; fi
+#COPY .devcontainer/requirements.txt.temp requirements.txt* /workspace/
+#RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt && rm requirements.txt*; fi
 
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
