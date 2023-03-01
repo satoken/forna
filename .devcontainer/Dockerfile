@@ -1,15 +1,19 @@
-FROM continuumio/miniconda3:latest
+FROM mcr.microsoft.com/devcontainers/miniconda:0-3
 
-RUN mkdir /workspace
-WORKDIR /workspace
+# Copy environment.yml (if found) to a temp location so we update the environment. Also
+# copy "noop.txt" so the COPY instruction does not fail if no environment.yml exists.
+COPY environment.yml* .devcontainer/noop.txt /tmp/conda-tmp/
+RUN if [ -f "/tmp/conda-tmp/environment.yml" ]; then umask 0002 && /opt/conda/bin/conda env update -n base -f /tmp/conda-tmp/environment.yml; fi \
+    && rm -rf /tmp/conda-tmp
 
-# Install Python dependencies from requirements.txt if it exists
-#COPY .devcontainer/requirements.txt.temp requirements.txt* /workspace/
-#RUN if [ -f "requirements.txt" ]; then pip install -r requirements.txt && rm requirements.txt*; fi
-
+# [Optional] Uncomment to install a different version of Python than the default
+# RUN conda install -y python=3.6 \
+#     && pip install --no-cache-dir pipx \
+#     && pipx reinstall-all
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
-RUN conda install python=3.6 forgi gunicorn viennarna flask werkzeug
+RUN conda install python=3.9 forgi gunicorn viennarna flask werkzeug
 
-# Set the default shell to bash rather than sh
-ENV SHELL /bin/bash
+# [Optional] Uncomment this section to install additional OS packages.
+# RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+#     && apt-get -y install --no-install-recommends <your-package-list-here>

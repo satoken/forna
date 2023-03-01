@@ -285,7 +285,12 @@ def main():
     SCRIPT_NAME = os.getenv('SCRIPT_NAME', None)
     if SCRIPT_NAME is not None:
         app.wsgi_app = DispatcherMiddleware(simple, {SCRIPT_NAME: app.wsgi_app})
+    setattr(logging, '_srcfile', None) # for compatibility
     app.run(host=options.host, debug=options.debug, port=options.port)
 
 if __name__ == '__main__':
     main()
+else:
+    fdb.init()
+    #app = create_app(True)
+    #app.config['APPLICATION_ROOT'] = os.getenv('SCRIPT_NAME', None)

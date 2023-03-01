@@ -6,7 +6,7 @@ WORKDIR /workspace
 COPY . .
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
-RUN conda install python=3.6 forgi gunicorn viennarna flask werkzeug
+RUN conda install python=3.9 forgi gunicorn viennarna flask werkzeug
 
 EXPOSE 9000
 #ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:9000", "forna_server:app"]
