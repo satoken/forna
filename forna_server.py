@@ -32,12 +32,12 @@ def simple(env, resp):
     resp(b'200 OK', [(b'Content-Type', b'text/plain')])
     return [b'Hello WSGI World']
 
-def create_app(static):
+def create_app(static = True, forna_root=''):
     '''
     Create the forna application given the options that were passed.
 
     '''
-    app = Flask(__name__, static_folder='htdocs')
+    app = Flask(__name__, static_folder='htdocs', instance_relative_config=True)
     app.wsgi_app = ProxyFix(app.wsgi_app)
 
     @app.errorhandler(400)
@@ -217,7 +217,7 @@ def create_app(static):
 
     @app.route('/js/interface.js')
     def rewrite_server_url():
-        return render_template('js/interface.js', server_url=os.getenv('SCRIPT_NAME', ''))
+        return render_template('js/interface.js', server_url=forna_root)
 
     if static:
         print(" * Starting static", file=sys.stderr)
@@ -280,9 +280,9 @@ def main():
                         format='%(asctime)s %(levelname)s: %(message)s '
                         '[in %(pathname)s:%(funcName)s:%(lineno)d]')
     fdb.init()
-    app = create_app(options.static)
-#    app.config['APPLICATION_ROOT'] = os.getenv('SCRIPT_NAME', None)
     SCRIPT_NAME = os.getenv('SCRIPT_NAME', None)
+    app = create_app(options.static, forna_root=SCRIPT_NAME if SCRIPT_NAME is not None else '')
+#    app.config['APPLICATION_ROOT'] = SCRIPT_NAME
     if SCRIPT_NAME is not None:
         app.wsgi_app = DispatcherMiddleware(simple, {SCRIPT_NAME: app.wsgi_app})
     setattr(logging, '_srcfile', None) # for compatibility
@@ -292,5 +292,6 @@ if __name__ == '__main__':
     main()
 else:
     fdb.init()
-    #app = create_app(True)
-    #app.config['APPLICATION_ROOT'] = os.getenv('SCRIPT_NAME', None)
+    #SCRIPT_NAME = os.getenv('SCRIPT_NAME', None)
+    #app = create_app(True, forna_root=SCRIPT_NAME if SCRIPT_NAME is not None else '')
+    #app.config['APPLICATION_ROOT'] = SCRIPT_NAME
